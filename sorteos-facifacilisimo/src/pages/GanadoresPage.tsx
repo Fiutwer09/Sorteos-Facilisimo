@@ -47,7 +47,7 @@ const GanadoresPage = () => {
       // --- Marca de agua de fondo (aún más grande) ---
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
-      const imgWidth = pageWidth * 1.0; 
+      const imgWidth = pageWidth * 1.5; 
       const imgHeight = pageHeight * 0.7; 
       const x = (pageWidth - imgWidth) / 2;
       const y = (pageHeight - imgHeight) / 2;
