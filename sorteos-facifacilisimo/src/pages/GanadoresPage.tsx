@@ -77,8 +77,13 @@ const GanadoresPage = () => {
       doc.text('Ganadores del Sorteo', 70, 25);
       autoTable(doc, {
         startY: 50,
-        head: [['#', 'Usuario', 'Comentario']],
-        body: ganadores.map((w, i) => [i + 1, w.username, w.comment]),
+        head: [['#', 'Usuario', 'Comentario', 'Plataforma']],
+        body: ganadores.map((w, i) => [
+          i + 1,
+          w.username,
+          w.comment.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF]+|[\u2011-\u26FF]|\uD83D[\uDE00-\uDE4F])/g, ''),
+          w.platform ? (w.platform === 'instagram' ? 'Instagram' : 'Facebook') : ''
+        ]),
         styles: {
           fontSize: 12,
           cellPadding: 4,
@@ -95,7 +100,8 @@ const GanadoresPage = () => {
         columnStyles: {
           0: { halign: 'center', cellWidth: 12 },
           1: { cellWidth: 40 },
-          2: { cellWidth: 120 },
+          2: { cellWidth: 80 },
+          3: { cellWidth: 30, halign: 'center' },
         },
         margin: { left: 10, right: 10 },
       });
@@ -146,6 +152,7 @@ const GanadoresPage = () => {
           {ganadores.map((winner, idx) => (
             <li key={idx} className="mb-2 border-b border-gray-700 pb-1">
               <span className="font-bold text-base text-blue-400">{idx + 1}. {winner.username}</span>
+              <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-800 font-semibold align-middle">{winner.platform ? (winner.platform === 'instagram' ? 'Instagram' : 'Facebook') : ''}</span>
               <div className="text-gray-200 text-sm">{winner.comment}</div>
             </li>
           ))}

@@ -7,7 +7,7 @@ export interface FiltersFacebookProps {
 
 const FiltersFacebook: React.FC<FiltersFacebookProps> = ({ onSearch }) => {
   const [query, setQuery] = useState('');
-  const [type, setType] = useState('numero');
+  const [type, setType] = useState('aleatorio');
   const [orden, setOrden] = useState(false);
   const [maxWinners, setMaxWinners] = useState(1);
 
@@ -22,22 +22,25 @@ const FiltersFacebook: React.FC<FiltersFacebookProps> = ({ onSearch }) => {
       onSubmit={handleSearch}
       className="w-full flex flex-wrap gap-4 items-center justify-center bg-gray-800/70 rounded-2xl p-6 shadow-lg border border-gray-700"
     >
-      <input
-        type="text"
-        placeholder="Buscar en comentarios de Facebook..."
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-        className="w-56 px-4 py-2 rounded-xl bg-gray-900/80 border-2 border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 text-white placeholder:text-blue-200 shadow-md transition-all duration-200 outline-none text-base"
-      />
       <select
         value={type}
         onChange={e => setType(e.target.value)}
         className="px-4 py-2 rounded-xl bg-gray-900/80 border-2 border-gray-700 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-300 text-white shadow-md transition-all duration-200 outline-none text-base cursor-pointer"
       >
+        <option value="aleatorio">Aleatorio</option>
         <option value="numero">Número</option>
         <option value="palabra">Palabra clave</option>
         <option value="marcador">Marcador</option>
       </select>
+      {type !== 'aleatorio' && (
+        <input
+          type="text"
+          placeholder="Buscar en comentarios de Facebook..."
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          className="w-56 px-4 py-2 rounded-xl bg-gray-900/80 border-2 border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 text-white placeholder:text-blue-200 shadow-md transition-all duration-200 outline-none text-base"
+        />
+      )}
       {type === 'numero' && (
         <label className="flex items-center gap-2 text-blue-200 cursor-pointer select-none">
           <input

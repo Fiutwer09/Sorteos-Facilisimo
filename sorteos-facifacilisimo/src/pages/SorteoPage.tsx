@@ -46,8 +46,8 @@ const SorteoPage = () => {
     if (plat === 'ambos') {
       const contentIG = localStorage.getItem('comentarios_instagram') || '';
       const contentFB = localStorage.getItem('comentarios_facebook') || '';
-      const parsedIG = parseComments(contentIG);
-      const parsedFB = parseCommentsFacebook(contentFB);
+      const parsedIG = parseComments(contentIG).map(c => ({ ...c, platform: 'instagram' }));
+      const parsedFB = parseCommentsFacebook(contentFB).map(c => ({ ...c, platform: 'facebook' }));
       setCommentsInstagram(parsedIG);
       setCommentsFacebook(parsedFB);
       setComments([...parsedIG, ...parsedFB]);
@@ -55,10 +55,10 @@ const SorteoPage = () => {
     } else {
       const content = localStorage.getItem('comentarios');
       if (plat === 'facebook') {
-        const parsed = parseCommentsFacebook(content || '');
+        const parsed = parseCommentsFacebook(content || '').map(c => ({ ...c, platform: 'facebook' }));
         setComments(parsed);
       } else {
-        const parsed = parseComments(content || '');
+        const parsed = parseComments(content || '').map(c => ({ ...c, platform: 'instagram' }));
         setComments(parsed);
       }
       setActiveFilter(plat || 'instagram');
@@ -80,13 +80,17 @@ const SorteoPage = () => {
 
   const handleSearch = (query: string, type: string, orden: boolean, maxWinners: number) => {
     setSearchTerm(query);
-    if (!query) {
+    if (type !== 'aleatorio' && !query) {
       toast.current?.show({ severity: 'warn', summary: 'Búsqueda vacía', detail: 'Ingresa un criterio de búsqueda.', life: 2500 });
       return;
     }
 
     let found: CommentBlock[] = [];
-    if (type === 'numero') {
+    if (type === 'aleatorio') {
+      // Selección aleatoria sin repetir
+      const shuffled = [...comments].sort(() => 0.5 - Math.random());
+      found = shuffled.slice(0, maxWinners);
+    } else if (type === 'numero') {
       if (orden) {
         found = comments.filter(c => c.comment.replace(/\s/g, '').includes(query));
       } else {
