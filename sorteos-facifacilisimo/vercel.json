@@ -5,6 +5,8 @@
   ],
   "routes": [
     { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "/images/(.*)", "dest": "/images/$1" },
+    { "src": "/icono-img-removebg-preview.ico", "dest": "/icono-img-removebg-preview.ico" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 } 
