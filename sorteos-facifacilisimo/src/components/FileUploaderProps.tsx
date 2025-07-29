@@ -34,7 +34,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileRead, disabled, label
         accept=".txt"
         customUpload
         uploadHandler={handleUpload}
-        chooseLabel="Seleccionar archivo .txt"
+        chooseLabel="Sorteos"
         mode="basic"
         auto
         maxFileSize={1000000}

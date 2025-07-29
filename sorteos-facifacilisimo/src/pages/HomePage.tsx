@@ -12,6 +12,7 @@ const HomePage = () => {
   const [imagenPrevisualizada, setImagenPrevisualizada] = useState(false);
   const [instagramFile, setInstagramFile] = useState<string | null>(null);
   const [facebookFile, setFacebookFile] = useState<string | null>(null);
+  const [nombresFile, setNombresFile] = useState<string | null>(null);
   const navigate = useNavigate();
   const toast = useRef<Toast>(null);
 
@@ -55,7 +56,17 @@ const HomePage = () => {
     }
   };
 
-  const handleGoToSorteo = (platform: 'instagram' | 'facebook' | 'ambos') => {
+  const handleNombresFile = (fileContent: string) => {
+    if (fileContent && fileContent.trim().length > 0) {
+      setNombresFile(fileContent);
+      localStorage.setItem('lista_nombres', fileContent);
+      toast.current?.show({ severity: 'success', summary: '¡Éxito!', detail: 'Lista de nombres cargada exitosamente', life: 3000 });
+    } else {
+      toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el archivo de nombres', life: 3000 });
+    }
+  };
+
+  const handleGoToSorteo = (platform: 'instagram' | 'facebook' | 'ambos' | 'nombres') => {
     if (platform === 'instagram') {
       localStorage.setItem('comentarios', instagramFile || '');
       localStorage.setItem('plataforma', 'instagram');
@@ -67,13 +78,17 @@ const HomePage = () => {
       localStorage.setItem('comentarios_instagram', instagramFile || '');
       localStorage.setItem('comentarios_facebook', facebookFile || '');
       localStorage.setItem('plataforma', 'ambos');
+    } else if (platform === 'nombres') {
+      localStorage.setItem('lista_nombres', nombresFile || '');
+      localStorage.setItem('plataforma', 'nombres');
     }
     navigate('/sorteo');
   };
 
-  const onlyInstagram = !!instagramFile && !facebookFile;
-  const onlyFacebook = !!facebookFile && !instagramFile;
-  const bothFiles = !!instagramFile && !!facebookFile;
+  const onlyInstagram = !!instagramFile && !facebookFile && !nombresFile;
+  const onlyFacebook = !!facebookFile && !instagramFile && !nombresFile;
+  const onlyNombres = !!nombresFile && !instagramFile && !facebookFile;
+  const bothFiles = !!instagramFile && !!facebookFile && !nombresFile;
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-center relative bg-gradient-to-br from-blue-900 via-gray-900 to-yellow-100 py-10 px-2 overflow-x-hidden">
@@ -137,20 +152,25 @@ const HomePage = () => {
             </div>
           )}
         </div>
-        {/* FileUploader para Instagram y Facebook */}
+        {/* FileUploader para Instagram, Facebook y Nombres */}
         <div className="w-full mb-2 flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
+          <div className="flex-1 justify-center text-center">
             <FileUploader onFileRead={handleInstagramFile} disabled={!imagenPrevisualizada} label="Archivo de comentarios Instagram" />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 justify-center text-center">
             <FileUploader onFileRead={handleFacebookFile} disabled={!imagenPrevisualizada} label="Archivo de comentarios Facebook" />
           </div>
+          <div className="flex-1 justify-center text-center">
+            <FileUploader onFileRead={handleNombresFile} disabled={!imagenPrevisualizada} label="Archivo de nombres para sorteo" />
+          </div>
         </div>
+        
         <div className="w-full text-center mt-2 text-gray-400 text-xs">
           <hr className="my-1" />
-          <span>Sube uno o ambos archivos <span className="font-semibold text-green-600">.txt</span> con los comentarios del sorteo para comenzar</span>
+          <span>Sube archivos <span className="font-semibold text-green-600">.txt</span> con comentarios o nombres para comenzar</span>
         </div>
-        {/* Botones para elegir plataforma o ambos */}
+        
+        {/* Botones para elegir plataforma o nombres */}
         <div className="w-full flex flex-col md:flex-row gap-4 justify-center mt-6">
           <Button
             label="Instagram"
@@ -163,6 +183,12 @@ const HomePage = () => {
             className="bg-gradient-to-r from-blue-400 to-blue-600 text-white font-bold text-lg px-8 py-3 rounded-xl shadow-lg border-2 border-blue-300 hover:from-blue-500 hover:to-blue-700 hover:scale-105 hover:shadow-xl transition-all duration-200"
             onClick={() => handleGoToSorteo('facebook')}
             disabled={!onlyFacebook}
+          />
+          <Button
+            label="Nombres"
+            className="bg-gradient-to-r from-purple-400 to-purple-600 text-white font-bold text-lg px-8 py-3 rounded-xl shadow-lg border-2 border-purple-300 hover:from-purple-500 hover:to-purple-700 hover:scale-105 hover:shadow-xl transition-all duration-200"
+            onClick={() => handleGoToSorteo('nombres')}
+            disabled={!onlyNombres}
           />
           <Button
             label="Continuar"

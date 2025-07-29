@@ -3,13 +3,19 @@ import { FaSearch } from 'react-icons/fa';
 
 export interface FiltersFacebookProps {
   onSearch: (query: string, type: string, orden: boolean, maxWinners: number) => void;
+  onFilterTypeChange?: (type: string) => void;
 }
 
-const FiltersFacebook: React.FC<FiltersFacebookProps> = ({ onSearch }) => {
+const FiltersFacebook: React.FC<FiltersFacebookProps> = ({ onSearch, onFilterTypeChange }) => {
   const [query, setQuery] = useState('');
   const [type, setType] = useState('aleatorio');
   const [orden, setOrden] = useState(false);
   const [maxWinners, setMaxWinners] = useState(1);
+
+  const handleTypeChange = (newType: string) => {
+    setType(newType);
+    onFilterTypeChange?.(newType);
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +30,7 @@ const FiltersFacebook: React.FC<FiltersFacebookProps> = ({ onSearch }) => {
     >
       <select
         value={type}
-        onChange={e => setType(e.target.value)}
+        onChange={e => handleTypeChange(e.target.value)}
         className="px-4 py-2 rounded-xl bg-gray-900/80 border-2 border-gray-700 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-300 text-white shadow-md transition-all duration-200 outline-none text-base cursor-pointer"
       >
         <option value="aleatorio">Aleatorio</option>

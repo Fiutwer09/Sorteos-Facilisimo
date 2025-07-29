@@ -32,15 +32,15 @@ const SorteoPage = () => {
   const toast = useRef<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [platform, setPlatform] = useState<'instagram' | 'facebook' | 'ambos'>('instagram');
-  const [activeFilter, setActiveFilter] = useState<'instagram' | 'facebook' | 'ambos'>('ambos');
+  const [platform, setPlatform] = useState<'instagram' | 'facebook' | 'ambos' | 'nombres'>('instagram');
+  const [activeFilter, setActiveFilter] = useState<'instagram' | 'facebook' | 'ambos' | 'nombres'>('ambos');
   const [commentsInstagram, setCommentsInstagram] = useState<CommentBlock[]>([]);
   const [commentsFacebook, setCommentsFacebook] = useState<CommentBlock[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const img = localStorage.getItem('imagenPublicacion');
-    const plat = localStorage.getItem('plataforma') as 'instagram' | 'facebook' | 'ambos';
+    const plat = localStorage.getItem('plataforma') as 'instagram' | 'facebook' | 'ambos' | 'nombres';
     setImageUrl(img);
     setPlatform(plat || 'instagram');
     if (plat === 'ambos') {
@@ -52,6 +52,26 @@ const SorteoPage = () => {
       setCommentsFacebook(parsedFB);
       setComments([...parsedIG, ...parsedFB]);
       setActiveFilter('ambos');
+    } else if (plat === 'nombres') {
+      const nombresContent = localStorage.getItem('lista_nombres') || '';
+      if (nombresContent) {
+        // Procesar cada línea y separar por comas también
+        const nombresList = nombresContent
+          .split('\n')
+          .flatMap(line => line.split(','))
+          .map(name => name.trim())
+          .filter(name => name.length > 0);
+        
+        // Crear objetos CommentBlock para cada nombre individual
+        const nombresComments: CommentBlock[] = nombresList.map((nombre) => ({
+          username: nombre,
+          comment: `Nombre en lista: ${nombre}`,
+          date: new Date().toLocaleDateString('es-ES'),
+          rawBlock: `${nombre}\n${new Date().toLocaleDateString('es-ES')}\nNombre en lista: ${nombre}`
+        }));
+        
+        setComments(nombresComments);
+      }
     } else {
       const content = localStorage.getItem('comentarios');
       if (plat === 'facebook') {
@@ -80,6 +100,7 @@ const SorteoPage = () => {
 
   const handleSearch = (query: string, type: string, orden: boolean, maxWinners: number) => {
     setSearchTerm(query);
+    
     if (type !== 'aleatorio' && !query) {
       toast.current?.show({ severity: 'warn', summary: 'Búsqueda vacía', detail: 'Ingresa un criterio de búsqueda.', life: 2500 });
       return;
@@ -120,6 +141,10 @@ const SorteoPage = () => {
       setDialogVisible(false); // No mostrar el modal si no hay ganadores
       toast.current?.show({ severity: 'warn', summary: 'Sin coincidencias', detail: 'No se encontró ningún comentario que coincida.', life: 2500 });
     }
+  };
+
+  const handleFilterTypeChange = () => {
+    // Filter type change handled by the filter components
   };
 
   const totalComentarios = comments.length;
@@ -198,12 +223,12 @@ const SorteoPage = () => {
           {/* Filtros */}
           <div className="bg-gray-800/50 rounded-xl p-4">
             {platform === 'facebook' ? (
-              <FiltersFacebook onSearch={handleSearch} />
+              <FiltersFacebook onSearch={handleSearch} onFilterTypeChange={handleFilterTypeChange} />
             ) : platform === 'instagram' ? (
-              <Filters onSearch={handleSearch} />
+              <Filters onSearch={handleSearch} onFilterTypeChange={handleFilterTypeChange} />
             ) : (
               // Ambos: puedes usar el filtro de Instagram por defecto o mostrar ambos
-              <Filters onSearch={handleSearch} />
+              <Filters onSearch={handleSearch} onFilterTypeChange={handleFilterTypeChange} />
             )}
           </div>
 

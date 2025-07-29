@@ -134,7 +134,7 @@ const GanadoresPage = () => {
       <div className="max-w-2xl w-full bg-gray-900/90 rounded-3xl shadow-2xl p-4 flex flex-col items-center max-h-[80vh] overflow-hidden mt-4 md:mt-8 border-4 border-yellow-400 shadow-xl">
         {criterio && (
           <div className="flex flex-col items-center mb-4">
-            <h2 className="text-xl font-bold mb-2 text-white tracking-wide uppercase">Número ganador</h2>
+            <h2 className="text-xl font-bold mb-2 text-white tracking-wide uppercase">🎉 Ganadores del sorteo 🎉</h2>
             <div className="flex gap-4">
               {criterio.valor.split('').map((char, idx) => (
                 <div
@@ -147,7 +147,7 @@ const GanadoresPage = () => {
             </div>
           </div>
         )}
-        <h1 className="text-2xl font-bold mb-4 text-white">🎉 Ganadores 🎉</h1>
+        
         <ul className="mb-4 w-full max-w-md overflow-y-auto" style={{ maxHeight: '32vh' }}>
           {ganadores.map((winner, idx) => (
             <li key={idx} className="mb-2 border-b border-gray-700 pb-1">
