@@ -296,12 +296,6 @@ const SorteoPage = () => {
         >
           <i className="pi pi-home text-xl" /> Volver al inicio
         </button>
-        <button
-          className="flex items-center justify-center gap-3 bg-yellow-400 text-blue-900 font-semibold text-lg px-8 py-4 rounded-xl border-2 border-yellow-300 hover:bg-yellow-500 hover:shadow-lg transition-all duration-300"
-          onClick={() => navigate('/ganadores')}
-        >
-          <i className="pi pi-star text-xl" /> Ver ganadores
-        </button>
       </div>
 
       {/* Dialogo de ganadores */}

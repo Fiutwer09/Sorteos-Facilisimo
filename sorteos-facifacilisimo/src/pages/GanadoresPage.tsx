@@ -36,7 +36,7 @@ const GanadoresPage = () => {
     const crit = localStorage.getItem('criterioBusqueda');
     if (crit) setCriterio(JSON.parse(crit));
     // Carga logo e icono para el PDF
-    getBase64FromUrl('/images/Facilisimo-removebg-preview.png').then(setLogoBase64);
+    getBase64FromUrl('/images/LOGO-FACILÍSIMO-.png').then(setLogoBase64);
     getBase64FromUrl('/images/Logo_opacidad.png').then(setIconBase64); // Marca de agua de fondo
     getBase64FromUrl('/images/logoo.png').then(setFooterLogoBase64);   // Logo del footer
   }, [navigate]);
@@ -70,11 +70,27 @@ const GanadoresPage = () => {
       doc.setFillColor(255, 221, 51); // Amarillo Facilísimo
       doc.rect(0, 0, 210, 40, 'F');
       if (logoBase64) {
-        doc.addImage(logoBase64, 'PNG', 10, 5, 50, 30);
+        doc.addImage(logoBase64, 'PNG', 5, 8, 60, 25);
       }
-      doc.setFontSize(22);
+      doc.setFontSize(25);
       doc.setTextColor(33, 37, 41);
-      doc.text('Ganadores del Sorteo', 70, 25);
+      doc.text('Ganadores del Sorteo', 70, 20);
+      
+      // Agregar fecha del día
+      const fechaActual = new Date().toLocaleDateString('es-ES', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      const horaActual = new Date().toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      doc.setFontSize(12);
+      doc.setTextColor(33, 37, 41);
+      doc.text(`Fecha: ${fechaActual} - ${horaActual}`, 70, 35);
       autoTable(doc, {
         startY: 50,
         head: [['#', 'Usuario', 'Comentario', 'Plataforma']],
@@ -85,7 +101,7 @@ const GanadoresPage = () => {
           w.platform ? (w.platform === 'instagram' ? 'Instagram' : 'Facebook') : ''
         ]),
         styles: {
-          fontSize: 12,
+          fontSize: 10,
           cellPadding: 4,
           halign: 'left',
         },
@@ -110,11 +126,21 @@ const GanadoresPage = () => {
       if (footerLogoBase64) {
         doc.addImage(footerLogoBase64, 'PNG', 10, pageHeight - 18, 12, 12);
       }
-      doc.setFontSize(12);
-      doc.setTextColor(255, 221, 51);
-      doc.text('Sorteos FaciFacilísimo - ¡Tu sorteo, fácil y transparente!', 25, pageHeight - 8);
-      doc.save('ganadores_facilisimo.pdf');
-      toast.current?.show({ severity: 'success', summary: '¡Éxito!', detail: 'PDF guardado exitosamente', life: 2500 });
+             doc.setFontSize(12);
+       doc.setTextColor(255, 221, 51);
+       doc.text('Sorteos FaciFacilísimo - ¡Tu sorteo, fácil y transparente!', 25, pageHeight - 8);
+       
+       // Generar nombre de archivo con fecha y hora
+       const fecha = new Date();
+       const yyyy = fecha.getFullYear();
+       const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+       const dd = String(fecha.getDate()).padStart(2, '0');
+       const hh = String(fecha.getHours()).padStart(2, '0');
+       const min = String(fecha.getMinutes()).padStart(2, '0');
+
+       const nombreArchivo = `Ganadores_Sorteo_${yyyy}-${mm}-${dd}_${hh}-${min}.pdf`;
+       doc.save(nombreArchivo);
+       toast.current?.show({ severity: 'success', summary: '¡Éxito!', detail: 'PDF guardado exitosamente', life: 2500 });
     }
   };
 

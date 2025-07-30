@@ -70,7 +70,7 @@ const Filters: React.FC<FiltersProps> = ({ onSearch, onFilterTypeChange }) => {
         type="submit"
         className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-blue-900 font-bold text-base px-6 py-2 rounded-xl shadow-lg border-2 border-yellow-300 hover:from-yellow-500 hover:to-yellow-400 hover:scale-105 hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 animate-pulse"
       >
-        <FaSearch className="text-blue-900 text-lg" /> Buscar
+        <FaSearch className="text-blue-900 text-lg" /> Buscar Ganadores
       </button>
     </form>
   );

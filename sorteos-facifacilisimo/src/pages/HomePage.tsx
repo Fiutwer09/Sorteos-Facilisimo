@@ -96,7 +96,7 @@ const HomePage = () => {
       {/* Hero visual */}
       <div className="w-full max-w-4xl mx-auto text-center mb-12 animate-fadeIn relative z-10">
         <img
-          src="/images/Facilisimo-removebg-preview.png"
+          src="/images/LOGO-FACILÍSIMO-.png"
           alt="Facilísimo Logo"
           className="mx-auto max-h-36 drop-shadow-2xl mb-4 select-none"
           draggable={false}
@@ -239,10 +239,33 @@ const HomePage = () => {
       {/* Footer de confianza */}
       <footer className="mt-8 text-gray-300 text-sm text-center w-full animate-fadeIn relative z-10">
         <hr className="my-2 max-w-2xl mx-auto border-blue-900/30" />
-        <p>
-          <span className="font-bold text-yellow-400">Transparencia y confianza:</span> Tus sorteos son 100% justos y seguros.<br />
-          &copy; {new Date().getFullYear()} Sorteos FaciFacilísimo. Hecho con <span className="text-red-500">♥</span> para tus sorteos.
-        </p>
+        <div className="flex flex-col md:flex-row items-center justify-between max-w-4xl mx-auto px-4">
+          {/* Imagen izquierda */}
+          <div className="mb-4 md:mb-0">
+            <img
+              src="/images/COLJUEGOS-Y-SUPERSALUD.png"
+              alt="Lotería del Quindío"
+              className="h-16 md:h-20 object-contain"
+            />
+          </div>
+          
+          {/* Texto central */}
+          <div className="text-center">
+            <p>
+              <span className="font-bold text-yellow-400">Transparencia y confianza:</span> Tus sorteos son 100% justos y seguros.<br />
+              &copy; {new Date().getFullYear()} Sorteos FaciFacilísimo. Hecho con <span className="text-red-500">♥</span> para tus sorteos.
+            </p>
+          </div>
+          
+          {/* Imagen derecha */}
+          <div className="mt-4 md:mt-0">
+            <img
+              src="/images/LOGO-LOTERÍA-DEL-QUINDÍO.png"
+              alt="Coljuegos y Supersalud"
+              className="h-16 md:h-20 object-contain"
+            />
+          </div>
+        </div>
       </footer>
       <style>{`
         .animate-fadeIn {
