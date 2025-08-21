@@ -7,6 +7,7 @@ export interface WinnerDialogProps {
   visible: boolean;
   comments: { username: string; comment: string }[];
   onHide: () => void;
+  sorteoTitulo?: string;
 }
 
 // Utilidad para convertir una imagen pública a base64
@@ -21,7 +22,7 @@ async function getBase64FromUrl(url: string): Promise<string> {
   });
 }
 
-const WinnerDialog: React.FC<WinnerDialogProps> = ({ visible, comments, onHide }) => {
+const WinnerDialog: React.FC<WinnerDialogProps> = ({ visible, comments, onHide, sorteoTitulo = 'Ganadores del Sorteo' }) => {
   const [logoBase64, setLogoBase64] = useState<string | null>(null);
   const [iconBase64, setIconBase64] = useState<string | null>(null);
 
@@ -48,7 +49,7 @@ const WinnerDialog: React.FC<WinnerDialogProps> = ({ visible, comments, onHide }
     }
     doc.setFontSize(22);
     doc.setTextColor(33, 37, 41);
-    doc.text('Ganadores del Sorteo', 70, 25);
+    doc.text(sorteoTitulo, 70, 25);
 
     // Tabla de ganadores
     autoTable(doc, {
@@ -96,7 +97,7 @@ const WinnerDialog: React.FC<WinnerDialogProps> = ({ visible, comments, onHide }
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
       <Confetti width={width} height={height} numberOfPieces={200} recycle={false} />
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-lg w-full text-center">
-        <h2 className="text-2xl font-bold mb-6 text-green-600">🎉 Ganadores 🎉</h2>
+        <h2 className="text-2xl font-bold mb-6 text-green-600">🎉 {sorteoTitulo} 🎉</h2>
         <ul className="mb-6">
           {comments.map((winner, idx) => (
             <li key={idx} className="mb-4 border-b pb-2">

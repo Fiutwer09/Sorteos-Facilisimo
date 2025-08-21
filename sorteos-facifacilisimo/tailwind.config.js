@@ -6,6 +6,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'gotham': ['Gotham', 'sans-serif'],
+        'sans': ['Gotham', 'sans-serif'],
+      },
       nimation: {
         marquee: 'marquee 20s linear infinite',
         marquee2: 'marquee2 20s linear infinite',

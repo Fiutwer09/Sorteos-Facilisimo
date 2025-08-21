@@ -3,6 +3,7 @@ import CommentsTable from '../components/CommentsTable';
 import Filters from '../components/Filters';
 import FiltersFacebook from '../components/FiltersFacebook';
 import WinnerDialog from '../components/WinnerDialog';
+import Countdown from '../components/Countdown';
 import { parseComments, parseCommentsFacebook, type CommentBlock } from '../utils/commentParser';
 import { Toast } from 'primereact/toast';
 import { useNavigate } from 'react-router-dom';
@@ -29,6 +30,8 @@ const SorteoPage = () => {
   const [comments, setComments] = useState<CommentBlock[]>([]);
   const [winners, setWinners] = useState<CommentBlock[]>([]);
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [showCountdown, setShowCountdown] = useState(false);
+  const [sorteoTitulo, setSorteoTitulo] = useState('');
   const toast = useRef<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -133,14 +136,19 @@ const SorteoPage = () => {
         tipo: type,
         valor: query
       }));
-      navigate('/ganadores');
-      toast.current?.show({ severity: 'success', summary: '¡Ganadores encontrados!', detail: `Se encontraron ${found.length} comentarios que coinciden.`, life: 2500 });
-      setDialogVisible(true);
+      localStorage.setItem('sorteoTitulo', sorteoTitulo);
+      setShowCountdown(true);
     } else {
       setWinners([]);
       setDialogVisible(false); // No mostrar el modal si no hay ganadores
       toast.current?.show({ severity: 'warn', summary: 'Sin coincidencias', detail: 'No se encontró ningún comentario que coincida.', life: 2500 });
     }
+  };
+
+  const handleCountdownComplete = () => {
+    setShowCountdown(false);
+    navigate('/ganadores');
+    toast.current?.show({ severity: 'success', summary: '¡Ganadores encontrados!', detail: `Se encontraron ${winners.length} comentarios que coinciden.`, life: 2500 });
   };
 
   const handleFilterTypeChange = () => {
@@ -153,6 +161,11 @@ const SorteoPage = () => {
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-blue-900 via-gray-900 to-yellow-100 py-6 px-2 overflow-x-hidden">
       <Toast ref={toast} position="top-center" />
+      
+      {/* Countdown overlay */}
+      {showCountdown && (
+        <Countdown onComplete={handleCountdownComplete} />
+      )}
       
       {/* Header principal más compacto */}
       <div className="max-w-7xl mx-auto mb-8">
@@ -189,6 +202,21 @@ const SorteoPage = () => {
         <div className="bg-gray-900/90 rounded-2xl border-2 border-yellow-400 shadow-xl p-6">
           <h2 className="text-2xl font-bold text-white mb-6 text-center">🎯 Buscar Ganadores</h2>
           
+          {/* Campo de título del sorteo */}
+          <div className="mb-6">
+            <label htmlFor="sorteoTitulo" className="block text-white font-semibold mb-2 text-center">
+              📝 Título del Sorteo
+            </label>
+            <input
+              type="text"
+              id="sorteoTitulo"
+              value={sorteoTitulo}
+              onChange={(e) => setSorteoTitulo(e.target.value)}
+              placeholder="Ej: Sorteo de Instagram, Promoción especial..."
+              className="w-full px-4 py-3 rounded-xl bg-gray-800/80 border-2 border-gray-700 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-300 text-white placeholder:text-gray-400 shadow-md transition-all duration-200 outline-none text-base text-center"
+            />
+          </div>
+          
           {/* Imagen de la publicación */}
           {imageUrl && (
             <div className="mb-6 flex justify-center">
@@ -214,7 +242,7 @@ const SorteoPage = () => {
                 onClick={() => setActiveFilter('instagram')}
               >Instagram</button>
               <button
-                className={`px-4 py-2 rounded-lg font-bold border-2 transition ${activeFilter === 'facebook' ? 'bg-blue-500 text-white border-blue-600' : 'bg-gray-800 text-white border-gray-600'}`}
+                className={`px-4 py-2 rounded-lg font-bold border-2 transition ${activeFilter === 'facebook' ? 'bg-blue-500 text-white border-blue-600' : 'bg-gray-800 text-white border-blue-600'}`}
                 onClick={() => setActiveFilter('facebook')}
               >Facebook</button>
             </div>
@@ -303,6 +331,7 @@ const SorteoPage = () => {
         visible={dialogVisible}
         comments={winners}
         onHide={() => setDialogVisible(false)}
+        sorteoTitulo={sorteoTitulo}
       />
 
       {/* Footer */}

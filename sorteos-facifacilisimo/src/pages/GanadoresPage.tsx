@@ -21,6 +21,7 @@ const GanadoresPage = () => {
   const [ganadores, setGanadores] = useState<any[]>([]);
   const navigate = useNavigate();
   const [criterio, setCriterio] = useState<{ tipo: string, valor: string } | null>(null);
+  const [sorteoTitulo, setSorteoTitulo] = useState<string>('');
   const [logoBase64, setLogoBase64] = useState<string | null>(null);
   const [iconBase64, setIconBase64] = useState<string | null>(null);
   const [footerLogoBase64, setFooterLogoBase64] = useState<string | null>(null);
@@ -35,6 +36,11 @@ const GanadoresPage = () => {
     }
     const crit = localStorage.getItem('criterioBusqueda');
     if (crit) setCriterio(JSON.parse(crit));
+    
+    // Obtener el título del sorteo
+    const titulo = localStorage.getItem('sorteoTitulo') || 'Ganadores del Sorteo';
+    setSorteoTitulo(titulo);
+    
     // Carga logo e icono para el PDF
     getBase64FromUrl('/images/LOGO-FACILÍSIMO-.png').then(setLogoBase64);
     getBase64FromUrl('/images/Logo_opacidad.png').then(setIconBase64); // Marca de agua de fondo
@@ -74,7 +80,7 @@ const GanadoresPage = () => {
       }
       doc.setFontSize(25);
       doc.setTextColor(33, 37, 41);
-      doc.text('Ganadores del Sorteo', 70, 20);
+      doc.text(sorteoTitulo, 70, 20);
       
       // Agregar fecha del día
       const fechaActual = new Date().toLocaleDateString('es-ES', {
@@ -160,7 +166,9 @@ const GanadoresPage = () => {
       <div className="max-w-2xl w-full bg-gray-900/90 rounded-3xl shadow-2xl p-4 flex flex-col items-center max-h-[80vh] overflow-hidden mt-4 md:mt-8 border-4 border-yellow-400 shadow-xl">
         {criterio && (
           <div className="flex flex-col items-center mb-4">
-            <h2 className="text-xl font-bold mb-2 text-white tracking-wide uppercase">🎉 Ganadores del sorteo 🎉</h2>
+            <h2 className="text-xl font-bold mb-2 text-white tracking-wide uppercase text-center">
+              🎉 {sorteoTitulo} 🎉
+            </h2>
             <div className="flex gap-4">
               {criterio.valor.split('').map((char, idx) => (
                 <div
@@ -202,7 +210,7 @@ const GanadoresPage = () => {
             className="inline-flex items-center gap-2 bg-white text-blue-800 font-medium text-sm px-3 py-1.5 rounded-full border border-blue-800 hover:bg-blue-50 hover:text-blue-900 transition-all duration-200 shadow-sm hover:shadow-md"
             onClick={() => navigate('/')}
           >
-          <i className="pi pi-home text-sm" /> Volver
+          <i className="pi pi-home text-sm" /> Volver al inicio
         </button>
         </div>
       </div>
