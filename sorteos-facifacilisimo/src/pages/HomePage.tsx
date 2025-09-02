@@ -155,13 +155,13 @@ const HomePage = () => {
         {/* FileUploader para Instagram, Facebook y Nombres */}
         <div className="w-full mb-2 flex flex-col md:flex-row gap-4">
           <div className="flex-1 justify-center text-center">
-            <FileUploader onFileRead={handleInstagramFile} disabled={!imagenPrevisualizada} label="Archivo de comentarios Instagram" />
+            <FileUploader onFileRead={handleInstagramFile} disabled={false} label="Archivo de comentarios Instagram" />
           </div>
           <div className="flex-1 justify-center text-center">
-            <FileUploader onFileRead={handleFacebookFile} disabled={!imagenPrevisualizada} label="Archivo de comentarios Facebook" />
+            <FileUploader onFileRead={handleFacebookFile} disabled={false} label="Archivo de comentarios Facebook" />
           </div>
           <div className="flex-1 justify-center text-center">
-            <FileUploader onFileRead={handleNombresFile} disabled={!imagenPrevisualizada} label="Archivo de nombres para sorteo" />
+            <FileUploader onFileRead={handleNombresFile} disabled={false} label="Archivo de nombres para sorteo" />
           </div>
         </div>
         

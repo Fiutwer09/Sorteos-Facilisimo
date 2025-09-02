@@ -44,7 +44,12 @@ const SorteoPage = () => {
   useEffect(() => {
     const img = localStorage.getItem('imagenPublicacion');
     const plat = localStorage.getItem('plataforma') as 'instagram' | 'facebook' | 'ambos' | 'nombres';
-    setImageUrl(img);
+    if (img && img.trim() !== "") {
+      setImageUrl(img);
+    } else {
+      setImageUrl(null);
+    }
+  
     setPlatform(plat || 'instagram');
     if (plat === 'ambos') {
       const contentIG = localStorage.getItem('comentarios_instagram') || '';
@@ -319,6 +324,7 @@ const SorteoPage = () => {
             localStorage.removeItem('comentarios_facebook');
             localStorage.removeItem('imagenPublicacion');
             localStorage.removeItem('plataforma');
+            setImageUrl(null); // 🔥 limpiar el estado
             navigate('/');
           }}
         >
