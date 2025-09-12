@@ -4,6 +4,7 @@ import FileUploader from '../components/FileUploaderProps';
 import { Button } from 'primereact/button';
 import { FaLink, FaUpload, FaMagic, FaHeadset } from 'react-icons/fa';
 import { Toast } from 'primereact/toast';
+import * as XLSX from 'xlsx';
 
 const HomePage = () => {
   const [url, setUrl] = useState('');
@@ -37,34 +38,60 @@ const HomePage = () => {
     setLoading(false);
   };
 
-  const handleInstagramFile = (fileContent: string) => {
-    if (fileContent && fileContent.trim().length > 0) {
-      setInstagramFile(fileContent);
-      localStorage.setItem('comentarios_instagram', fileContent);
-      toast.current?.show({ severity: 'success', summary: '¡Éxito!', detail: 'Comentarios de Instagram cargados exitosamente', life: 3000 });
-    } else {
-      toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el archivo de Instagram', life: 3000 });
-    }
-  };
-  const handleFacebookFile = (fileContent: string) => {
-    if (fileContent && fileContent.trim().length > 0) {
-      setFacebookFile(fileContent);
-      localStorage.setItem('comentarios_facebook', fileContent);
-      toast.current?.show({ severity: 'success', summary: '¡Éxito!', detail: 'Comentarios de Facebook cargados exitosamente', life: 3000 });
-    } else {
-      toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el archivo de Facebook', life: 3000 });
-    }
-  };
+  const handleInstagramFile = (fileContent: string | File) => {
+  if (typeof fileContent !== 'string') return; // Ignora si no es string
+  if (fileContent && fileContent.trim().length > 0) {
+    setInstagramFile(fileContent);
+    localStorage.setItem('comentarios_instagram', fileContent);
+    toast.current?.show({ severity: 'success', summary: '¡Éxito!', detail: 'Comentarios de Instagram cargados exitosamente', life: 3000 });
+  } else {
+    toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el archivo de Instagram', life: 3000 });
+  }
+};
 
-  const handleNombresFile = (fileContent: string) => {
-    if (fileContent && fileContent.trim().length > 0) {
-      setNombresFile(fileContent);
-      localStorage.setItem('lista_nombres', fileContent);
+const handleFacebookFile = (fileContent: string | File) => {
+  if (typeof fileContent !== 'string') return; // Ignora si no es string
+  if (fileContent && fileContent.trim().length > 0) {
+    setFacebookFile(fileContent);
+    localStorage.setItem('comentarios_facebook', fileContent);
+    toast.current?.show({ severity: 'success', summary: '¡Éxito!', detail: 'Comentarios de Facebook cargados exitosamente', life: 3000 });
+  } else {
+    toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el archivo de Facebook', life: 3000 });
+  }
+};
+
+  const handleNombresFile = async (file: File | string) => {
+  if (typeof file === 'string') {
+    // Modo antiguo: .txt
+    if (file && file.trim().length > 0) {
+      setNombresFile(file);
+      localStorage.setItem('lista_nombres', file);
       toast.current?.show({ severity: 'success', summary: '¡Éxito!', detail: 'Lista de nombres cargada exitosamente', life: 3000 });
     } else {
       toast.current?.show({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el archivo de nombres', life: 3000 });
     }
-  };
+  } else if (file instanceof File) {
+    // Nuevo: Excel
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target?.result as ArrayBuffer);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      // Extrae la primera columna, omitiendo celdas vacías
+      const nombres = json.map((row: any) => row[0]).filter(Boolean).join('\n');
+      if (nombres.length > 0) {
+        setNombresFile(nombres);
+        localStorage.setItem('lista_nombres', nombres);
+        toast.current?.show({ severity: 'success', summary: '¡Éxito!', detail: 'Lista de nombres de Excel cargada exitosamente', life: 3000 });
+      } else {
+        toast.current?.show({ severity: 'error', summary: 'Error', detail: 'El archivo Excel no contiene nombres válidos', life: 3000 });
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+};
 
   const handleGoToSorteo = (platform: 'instagram' | 'facebook' | 'ambos' | 'nombres') => {
     if (platform === 'instagram') {
@@ -161,7 +188,7 @@ const HomePage = () => {
             <FileUploader onFileRead={handleFacebookFile} disabled={false} label="Archivo de comentarios Facebook" />
           </div>
           <div className="flex-1 justify-center text-center">
-            <FileUploader onFileRead={handleNombresFile} disabled={false} label="Archivo de nombres para sorteo" />
+            <FileUploader onFileRead={handleNombresFile} disabled={false} label="Archivo de nombres para sorteo" accept=".txt,.xlsx,xls" />
           </div>
         </div>
         
