@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FileUploader from '../components/FileUploaderProps';
 import { Button } from 'primereact/button';
-import { FaLink, FaUpload, FaMagic, FaHeadset } from 'react-icons/fa';
+import { FaLink, FaUpload, FaMagic, FaHeadset, FaImage } from 'react-icons/fa';
 import { Toast } from 'primereact/toast';
 import * as XLSX from 'xlsx';
 
@@ -10,7 +10,6 @@ const HomePage = () => {
   const [url, setUrl] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [imagenPrevisualizada, setImagenPrevisualizada] = useState(false);
   const [instagramFile, setInstagramFile] = useState<string | null>(null);
   const [facebookFile, setFacebookFile] = useState<string | null>(null);
   const [nombresFile, setNombresFile] = useState<string | null>(null);
@@ -27,15 +26,30 @@ const HomePage = () => {
       setImageUrl(img);
       if (img) {
         localStorage.setItem('imagenPublicacion', img);
-        setImagenPrevisualizada(true);
-      } else {
-        setImagenPrevisualizada(false);
       }
     } catch (error) {
       setImageUrl(null);
-      setImagenPrevisualizada(false);
     }
     setLoading(false);
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setImageUrl(result);
+        localStorage.setItem('imagenPublicacion', result);
+        toast.current?.show({ 
+          severity: 'success', 
+          summary: '¡Imagen cargada!', 
+          detail: 'Imagen subida exitosamente', 
+          life: 3000 
+        });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleInstagramFile = (fileContent: string | File) => {
@@ -135,12 +149,10 @@ const handleFacebookFile = (fileContent: string | File) => {
 
       {/* Card central */}
       <div className="max-w-3xl w-full bg-gray-900/90 rounded-3xl border-4 border-yellow-400 shadow-2xl p-10 flex flex-col items-center mb-10 animate-fadeIn relative z-10">
-        {/* Input + botón */}
-        <form
-          onSubmit={e => { e.preventDefault(); fetchImage(); }}
-          className="w-full flex flex-col md:flex-row gap-4 items-center justify-center mb-6"
-        >
-          <div className="flex-1 w-full">
+        {/* Input + botones */}
+        <div className="w-full flex flex-col gap-4 items-center justify-center mb-6">
+          {/* Input de URL */}
+          <div className="w-full">
             <div className="relative">
               <FaLink className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-400 text-lg" />
               <input
@@ -152,16 +164,35 @@ const handleFacebookFile = (fileContent: string | File) => {
               />
             </div>
           </div>
-          <Button
-            label={loading ? 'Cargando...' : 'Previsualizar'}
-            icon={<FaMagic className="text-blue-900 text-lg" />}
-            className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-blue-900 font-bold text-lg px-8 py-3 rounded-xl shadow-lg border-2 border-yellow-300 hover:from-yellow-500 hover:to-yellow-400 hover:scale-105 hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-            onClick={fetchImage}
-            disabled={!url || loading}
-            type="button"
-            style={{ minWidth: 180 }}
-          />
-        </form>
+          
+          {/* Botones lado a lado */}
+          <div className="w-full flex flex-col md:flex-row gap-4 items-center justify-center">
+            <Button
+              label={loading ? 'Cargando...' : 'Previsualizar'}
+              icon={<FaMagic className="text-blue-900 text-lg" />}
+              className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-blue-900 font-bold text-lg px-8 py-3 rounded-xl shadow-lg border-2 border-yellow-300 hover:from-yellow-500 hover:to-yellow-400 hover:scale-105 hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+              onClick={fetchImage}
+              disabled={!url || loading}
+              type="button"
+              style={{ minWidth: 180 }}
+            />
+            
+            <span className="text-gray-400 text-sm font-medium hidden md:block">O</span>
+            
+            <label className="cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              <div className="flex items-center gap-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold text-lg px-8 py-3 rounded-xl shadow-lg border-2 border-blue-300 hover:from-blue-600 hover:to-cyan-600 hover:scale-105 hover:shadow-xl transition-all duration-200 min-w-[180px]">
+                <FaImage className="text-lg" />
+                Cargar imagen
+              </div>
+            </label>
+          </div>
+        </div>
         {/* Imagen previsualizada */}
         <div className="w-full flex justify-center mb-6 min-h-[120px]">
           {imageUrl ? (

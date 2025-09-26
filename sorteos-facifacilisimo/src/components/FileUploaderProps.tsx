@@ -1,6 +1,7 @@
 // Para exportar PDF profesional, usa la función exportGanadoresPDF del WinnerDialog. Pega tus imágenes en base64 en las variables logoBase64 y iconBase64.
-import React from 'react';
+import React, { useRef } from 'react';
 import { FileUpload } from 'primereact/fileupload';
+import { Toast } from 'primereact/toast';
 import type { FileUploadHandlerEvent } from 'primereact/fileupload';
 
 export interface FileUploaderProps {
@@ -12,6 +13,8 @@ export interface FileUploaderProps {
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({ onFileRead, disabled, label, accept }) => {
+  const toast = useRef<Toast>(null);
+
   const handleUpload = async (e: FileUploadHandlerEvent) => {
     const file = e.files[0];
     if (!file) return;
@@ -32,13 +35,26 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileRead, disabled, label
         console.error('Error al leer el archivo:', error);
       }
     } else {
-      // Opcional: puedes mostrar un error si el archivo no es válido
-      alert('Solo se permiten archivos .txt, .xlsx o .xls');
+      // Mostrar notificación estética con Toast
+      toast.current?.show({ 
+        severity: 'warn', 
+        summary: 'Tipo de archivo no válido', 
+        detail: 'Solo se permiten archivos .txt, .xlsx o .xls', 
+        life: 4000,
+        style: {
+          background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+          color: 'white',
+          border: '2px solid #fbbf24',
+          borderRadius: '12px',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.3)'
+        }
+      });
     }
   };
 
   return (
     <div>
+      <Toast ref={toast} position="top-center" />
       {label && <div className="mb-2 text-blue-900 font-bold text-lg">{label}</div>}
       <FileUpload
         name="comments"
