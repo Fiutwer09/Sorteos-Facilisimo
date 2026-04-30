@@ -142,9 +142,9 @@ const handleFacebookFile = (fileContent: string | File) => {
           className="mx-auto max-h-36 drop-shadow-2xl mb-4 select-none"
           draggable={false}
         />
-        <h1 className="text-5xl font-extrabold text-white mb-3 tracking-tight drop-shadow-lg">Sorteos FaciFacilísimo</h1>
-        <p className="text-xl text-blue-100 mb-2 font-medium">¡Haz tus sorteos de Instagram de forma fácil, rápida y transparente!</p>
-        <p className="text-base text-blue-200">Pega el enlace de tu publicación, previsualiza la imagen y sube los comentarios para comenzar.</p>
+        <h1 className="text-5xl font-extrabold text-white mb-3 tracking-tight drop-shadow-lg">Sorteos Facilísimo</h1>
+        <p className="text-xl text-blue-100 mb-2 font-medium">Sorteos aleatorios de forma fácil, rápida y transparente. La suerte decide.</p>
+        <p className="text-base text-blue-200">Pega el enlace de tu publicación o carga el listado, previsualiza la imagen y selecciona al ganador de manera completamente aleatoria.</p>
       </div>
 
       {/* Card central */}
